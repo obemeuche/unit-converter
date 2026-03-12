@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit Converter</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="container">
+        <h1>Unit Converter</h1>
+
+        <div class="converter-form">
+            <div class="form-group">
+                <label for="category">Category</label>
+                <select id="category" onchange="updateUnits()">
+                    <option value="">Select a category</option>
+                    <option th:each="cat : ${categories}" th:value="${cat}" th:text="${cat}"></option>
+                </select>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="sourceUnit">From</label>
+                    <select id="sourceUnit">
+                        <option value="">Select unit</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="targetUnit">To</label>
+                    <select id="targetUnit">
+                        <option value="">Select unit</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="value">Value</label>
+                <input type="number" id="value" step="any" placeholder="Enter value">
+            </div>
+
+            <button onclick="convert()" class="convert-btn">Convert</button>
+        </div>
+
+        <div id="result" class="result" style="display: none;">
+            <div class="result-value">
+                <span id="originalValue"></span> <span id="sourceUnitDisplay"></span> =
+                <span id="convertedValue"></span> <span id="targetUnitDisplay"></span>
+            </div>
+            <div class="formula" id="formula"></div>
+        </div>
+
+        <div id="error" class="error" style="display: none;"></div>
+    </div>
+
+    <script th:inline="javascript">
+        const unitsByCategory = /*[[${unitsByCategory}]]*/ {};
+
+        function updateUnits() {
+            const category = document.getElementById('category').value;
+            const sourceSelect = document.getElementById('sourceUnit');
+            const targetSelect = document.getElementById('targetUnit');
+
+            // Clear existing options
+            sourceSelect.innerHTML = '<option value="">Select unit</option>';
+            targetSelect.innerHTML = '<option value="">Select unit</option>';
+
+            if (category && unitsByCategory[category]) {
+                unitsByCategory[category].forEach(unit => {
+                    sourceSelect.innerHTML += `<option value="${unit}">${formatUnit(unit)}</option>`;
+                    targetSelect.innerHTML += `<option value="${unit}">${formatUnit(unit)}</option>`;
+                });
+            }
+
+            // Hide result when category changes
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('error').style.display = 'none';
+        }
+
+        function formatUnit(unit) {
+            return unit.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+        }
+
+        async function convert() {
+            const category = document.getElementById('category').value;
+            const sourceUnit = document.getElementById('sourceUnit').value;
+            const targetUnit = document.getElementById('targetUnit').value;
+            const value = document.getElementById('value').value;
+
+            // Validation
+            if (!category || !sourceUnit || !targetUnit || value === '') {
+                showError('Please fill in all fields');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/convert', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        category: category,
+                        sourceUnit: sourceUnit,
+                        targetUnit: targetUnit,
+                        value: parseFloat(value)
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Conversion failed');
+                }
+
+                const result = await response.json();
+                displayResult(result);
+            } catch (e) {
+                showError('Error performing conversion: ' + e.message);
+            }
+        }
+
+        function displayResult(result) {
+            document.getElementById('error').style.display = 'none';
+            document.getElementById('result').style.display = 'block';
+
+            document.getElementById('originalValue').textContent = result.originalValue;
+            document.getElementById('sourceUnitDisplay').textContent = formatUnit(result.sourceUnit);
+            document.getElementById('convertedValue').textContent = result.convertedValue.toFixed(6);
+            document.getElementById('targetUnitDisplay').textContent = formatUnit(result.targetUnit);
+            document.getElementById('formula').textContent = result.formula;
+        }
+
+        function showError(message) {
+            document.getElementById('result').style.display = 'none';
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
