@@ -4,7 +4,6 @@ import org.example.model.ConversionRequest;
 import org.example.model.ConversionResult;
 import org.example.model.UnitCategory;
 import org.example.service.ConversionService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,22 +24,13 @@ public class ApiController {
     }
 
     @GetMapping("/units/{category}")
-    public ResponseEntity<List<String>> getUnits(@PathVariable String category) {
-        try {
-            UnitCategory unitCategory = UnitCategory.valueOf(category.toUpperCase());
-            return ResponseEntity.ok(conversionService.getUnitsForCategory(unitCategory));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
-        }
+    public List<String> getUnits(@PathVariable String category) {
+        UnitCategory unitCategory = UnitCategory.valueOf(category.toUpperCase());
+        return conversionService.getUnitsForCategory(unitCategory);
     }
 
     @PostMapping("/convert")
-    public ResponseEntity<ConversionResult> convert(@RequestBody ConversionRequest request) {
-        try {
-            ConversionResult result = conversionService.convert(request);
-            return ResponseEntity.ok(result);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
-        }
+    public ConversionResult convert(@RequestBody ConversionRequest request) {
+        return conversionService.convert(request);
     }
 }
