@@ -2,6 +2,8 @@
 
 A Spring Boot web application for converting between units of measurement across multiple categories.
 
+Project roadmap.sh url: https://roadmap.sh/projects/unit-converter
+
 ## Features
 
 - **Length** — meters, kilometers, miles, feet, inches, and more
