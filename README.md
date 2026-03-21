@@ -49,6 +49,16 @@ curl -X POST http://localhost:8080/api/convert \
   -d '{"category": "LENGTH", "sourceUnit": "meter", "targetUnit": "foot", "value": 1}'
 ```
 
+## API Documentation (Swagger)
+
+Interactive API documentation is available via Swagger UI once the application is running.
+
+| Resource | URL |
+|----------|-----|
+| Swagger UI | `http://localhost:8080/swagger-ui/index.html` |
+| OpenAPI JSON | `http://localhost:8080/v3/api-docs` |
+| OpenAPI YAML | `http://localhost:8080/v3/api-docs.yaml` |
+
 ## Running tests
 
 ```bash
