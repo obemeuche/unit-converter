@@ -11,18 +11,19 @@ import java.util.Map;
 public class LengthConverter implements UnitConverter {
 
     private static final List<String> SUPPORTED_UNITS = List.of(
-            "meter", "kilometer", "centimeter", "mile", "foot", "inch", "yard"
+            "millimeter", "centimeter", "meter", "kilometer", "inch", "foot", "yard", "mile"
     );
 
     // Conversion factors to meters (base unit)
     private static final Map<String, Double> TO_METERS = Map.of(
+            "millimeter", 0.001,
+            "centimeter", 0.01,
             "meter", 1.0,
             "kilometer", 1000.0,
-            "centimeter", 0.01,
-            "mile", 1609.344,
-            "foot", 0.3048,
             "inch", 0.0254,
-            "yard", 0.9144
+            "foot", 0.3048,
+            "yard", 0.9144,
+            "mile", 1609.344
     );
 
     @Override

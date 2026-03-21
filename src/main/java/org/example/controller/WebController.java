@@ -6,9 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 public class WebController {
@@ -20,16 +18,28 @@ public class WebController {
     }
 
     @GetMapping("/")
-    public String index(Model model) {
-        List<UnitCategory> categories = conversionService.getCategories();
-        Map<String, List<String>> unitsByCategory = new HashMap<>();
-
-        for (UnitCategory category : categories) {
-            unitsByCategory.put(category.name(), conversionService.getUnitsForCategory(category));
-        }
-
-        model.addAttribute("categories", categories);
-        model.addAttribute("unitsByCategory", unitsByCategory);
+    public String index() {
         return "index";
+    }
+
+    @GetMapping("/length")
+    public String length(Model model) {
+        List<String> units = conversionService.getUnitsForCategory(UnitCategory.LENGTH);
+        model.addAttribute("units", units);
+        return "length";
+    }
+
+    @GetMapping("/weight")
+    public String weight(Model model) {
+        List<String> units = conversionService.getUnitsForCategory(UnitCategory.WEIGHT);
+        model.addAttribute("units", units);
+        return "weight";
+    }
+
+    @GetMapping("/temperature")
+    public String temperature(Model model) {
+        List<String> units = conversionService.getUnitsForCategory(UnitCategory.TEMPERATURE);
+        model.addAttribute("units", units);
+        return "temperature";
     }
 }

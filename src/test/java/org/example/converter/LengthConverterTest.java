@@ -26,14 +26,15 @@ class LengthConverterTest {
     @Test
     void getSupportedUnits_returnsAllUnits() {
         List<String> units = converter.getSupportedUnits();
+        assertTrue(units.contains("millimeter"));
+        assertTrue(units.contains("centimeter"));
         assertTrue(units.contains("meter"));
         assertTrue(units.contains("kilometer"));
-        assertTrue(units.contains("centimeter"));
-        assertTrue(units.contains("mile"));
-        assertTrue(units.contains("foot"));
         assertTrue(units.contains("inch"));
+        assertTrue(units.contains("foot"));
         assertTrue(units.contains("yard"));
-        assertEquals(7, units.size());
+        assertTrue(units.contains("mile"));
+        assertEquals(8, units.size());
     }
 
     @Test

@@ -6,12 +6,12 @@ Project roadmap.sh url: https://roadmap.sh/projects/unit-converter
 
 ## Features
 
-- **Length** — meters, kilometers, miles, feet, inches, and more
-- **Weight** — kilograms, grams, pounds, ounces, and more
+- **Length** — millimeter, centimeter, meter, kilometer, inch, foot, yard, mile
+- **Weight** — milligram, gram, kilogram, ounce, pound
 - **Temperature** — Celsius, Fahrenheit, Kelvin
 - **Volume** — liters, milliliters, gallons, cups, and more
 
-The app includes a web UI and a REST API.
+Each unit category has its own dedicated page. The app also exposes a REST API for programmatic conversions.
 
 ## Requirements
 
@@ -26,6 +26,13 @@ The app includes a web UI and a REST API.
 
 The application starts on `http://localhost:8080`.
 
+| Page | URL |
+|------|-----|
+| Home | `http://localhost:8080/` |
+| Length | `http://localhost:8080/length` |
+| Weight | `http://localhost:8080/weight` |
+| Temperature | `http://localhost:8080/temperature` |
+
 ## REST API
 
 | Method | Endpoint | Description |
@@ -39,7 +46,7 @@ The application starts on `http://localhost:8080`.
 ```bash
 curl -X POST http://localhost:8080/api/convert \
   -H "Content-Type: application/json" \
-  -d '{"category": "LENGTH", "fromUnit": "METER", "toUnit": "FOOT", "value": 1}'
+  -d '{"category": "LENGTH", "sourceUnit": "meter", "targetUnit": "foot", "value": 1}'
 ```
 
 ## Running tests

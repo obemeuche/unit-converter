@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temperature Converter</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="container">
+        <nav class="nav">
+            <a href="/">Home</a>
+            <a href="/length">Length</a>
+            <a href="/weight">Weight</a>
+            <a href="/temperature" class="active">Temperature</a>
+        </nav>
+
+        <h1>Temperature Converter</h1>
+
+        <div class="converter-form">
+            <div class="form-group">
+                <label for="value">Value</label>
+                <input type="number" id="value" step="any" placeholder="Enter value">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="sourceUnit">From</label>
+                    <select id="sourceUnit">
+                        <option th:each="unit : ${units}" th:value="${unit}" th:text="${#strings.capitalize(unit)}"></option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="targetUnit">To</label>
+                    <select id="targetUnit">
+                        <option th:each="unit : ${units}" th:value="${unit}" th:text="${#strings.capitalize(unit)}"></option>
+                    </select>
+                </div>
+            </div>
+
+            <button onclick="convert()" class="convert-btn">Convert</button>
+        </div>
+
+        <div id="result" class="result" style="display: none;">
+            <div class="result-value">
+                <span id="originalValue"></span> <span id="sourceUnitDisplay"></span> =
+                <span id="convertedValue"></span> <span id="targetUnitDisplay"></span>
+            </div>
+            <div class="formula" id="formula"></div>
+        </div>
+
+        <div id="error" class="error" style="display: none;"></div>
+    </div>
+
+    <script>
+        async function convert() {
+            const sourceUnit = document.getElementById('sourceUnit').value;
+            const targetUnit = document.getElementById('targetUnit').value;
+            const value = document.getElementById('value').value;
+
+            if (value === '') {
+                showError('Please enter a value');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/convert', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        category: 'TEMPERATURE',
+                        sourceUnit: sourceUnit,
+                        targetUnit: targetUnit,
+                        value: parseFloat(value)
+                    })
+                });
+
+                if (!response.ok) {
+                    const err = await response.json();
+                    throw new Error(err.message || 'Conversion failed');
+                }
+
+                displayResult(await response.json());
+            } catch (e) {
+                showError('Error: ' + e.message);
+            }
+        }
+
+        function displayResult(result) {
+            document.getElementById('error').style.display = 'none';
+            document.getElementById('result').style.display = 'block';
+            document.getElementById('originalValue').textContent = result.originalValue;
+            document.getElementById('sourceUnitDisplay').textContent = capitalize(result.sourceUnit);
+            document.getElementById('convertedValue').textContent = result.convertedValue.toFixed(6);
+            document.getElementById('targetUnitDisplay').textContent = capitalize(result.targetUnit);
+            document.getElementById('formula').textContent = result.formula;
+        }
+
+        function showError(message) {
+            document.getElementById('result').style.display = 'none';
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+
+        function capitalize(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+    </script>
+</body>
+</html>

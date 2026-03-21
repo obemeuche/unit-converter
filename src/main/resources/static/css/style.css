@@ -115,3 +115,76 @@ select:focus, input:focus {
     color: #c62828;
     text-align: center;
 }
+
+.nav {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+.nav a {
+    text-decoration: none;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #555;
+    background-color: #f0f0f0;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.nav a:hover {
+    background-color: #ddd;
+}
+
+.nav a.active {
+    background-color: #007bff;
+    color: white;
+}
+
+.subtitle {
+    text-align: center;
+    color: #777;
+    margin-bottom: 30px;
+    font-size: 16px;
+}
+
+.category-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    text-decoration: none;
+    color: inherit;
+    transition: box-shadow 0.2s, border-color 0.2s;
+}
+
+.card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-color: #007bff;
+}
+
+.card-icon {
+    font-size: 32px;
+}
+
+.card-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+}
+
+.card-desc {
+    font-size: 13px;
+    color: #888;
+    margin-top: 2px;
+}

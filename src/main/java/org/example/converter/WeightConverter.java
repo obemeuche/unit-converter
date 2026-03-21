@@ -11,16 +11,16 @@ import java.util.Map;
 public class WeightConverter implements UnitConverter {
 
     private static final List<String> SUPPORTED_UNITS = List.of(
-            "kilogram", "gram", "pound", "ounce", "ton"
+            "milligram", "gram", "kilogram", "ounce", "pound"
     );
 
     // Conversion factors to kilograms (base unit)
     private static final Map<String, Double> TO_KILOGRAMS = Map.of(
-            "kilogram", 1.0,
+            "milligram", 0.000001,
             "gram", 0.001,
-            "pound", 0.453592,
+            "kilogram", 1.0,
             "ounce", 0.0283495,
-            "ton", 1000.0
+            "pound", 0.453592
     );
 
     @Override

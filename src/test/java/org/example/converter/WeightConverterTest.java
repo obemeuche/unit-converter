@@ -26,11 +26,11 @@ class WeightConverterTest {
     @Test
     void getSupportedUnits_returnsAllUnits() {
         List<String> units = converter.getSupportedUnits();
-        assertTrue(units.contains("kilogram"));
+        assertTrue(units.contains("milligram"));
         assertTrue(units.contains("gram"));
-        assertTrue(units.contains("pound"));
+        assertTrue(units.contains("kilogram"));
         assertTrue(units.contains("ounce"));
-        assertTrue(units.contains("ton"));
+        assertTrue(units.contains("pound"));
         assertEquals(5, units.size());
     }
 
@@ -59,9 +59,9 @@ class WeightConverterTest {
     }
 
     @Test
-    void convert_tonToKilogram() {
-        ConversionResult result = converter.convert(1.0, "ton", "kilogram");
-        assertEquals(1000.0, result.getConvertedValue(), 0.0001);
+    void convert_milligramToGram() {
+        ConversionResult result = converter.convert(1000.0, "milligram", "gram");
+        assertEquals(1.0, result.getConvertedValue(), 0.0001);
     }
 
     @Test

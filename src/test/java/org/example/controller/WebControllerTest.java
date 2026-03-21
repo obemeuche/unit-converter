@@ -20,18 +20,30 @@ class WebControllerTest {
     void index_returnsIndexPage() throws Exception {
         mockMvc.perform(get("/"))
             .andExpect(status().isOk())
-            .andExpect(view().name("index"))
-            .andExpect(model().attributeExists("categories"))
-            .andExpect(model().attributeExists("unitsByCategory"));
+            .andExpect(view().name("index"));
     }
 
     @Test
-    void index_containsAllCategories() throws Exception {
-        mockMvc.perform(get("/"))
+    void length_returnsLengthPage() throws Exception {
+        mockMvc.perform(get("/length"))
             .andExpect(status().isOk())
-            .andExpect(content().string(org.hamcrest.Matchers.containsString("LENGTH")))
-            .andExpect(content().string(org.hamcrest.Matchers.containsString("WEIGHT")))
-            .andExpect(content().string(org.hamcrest.Matchers.containsString("TEMPERATURE")))
-            .andExpect(content().string(org.hamcrest.Matchers.containsString("VOLUME")));
+            .andExpect(view().name("length"))
+            .andExpect(model().attributeExists("units"));
+    }
+
+    @Test
+    void weight_returnsWeightPage() throws Exception {
+        mockMvc.perform(get("/weight"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("weight"))
+            .andExpect(model().attributeExists("units"));
+    }
+
+    @Test
+    void temperature_returnsTemperaturePage() throws Exception {
+        mockMvc.perform(get("/temperature"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("temperature"))
+            .andExpect(model().attributeExists("units"));
     }
 }
