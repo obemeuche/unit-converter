@@ -1,0 +1,217 @@
+openapi: 3.0.3
+info:
+  title: Unit Converter API
+  description: REST API for converting values between units of measurement (length, weight, temperature, volume).
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+
+tags:
+  - name: Unit Converter
+    description: Convert values between units of measurement
+
+paths:
+  /api/categories:
+    get:
+      tags:
+        - Unit Converter
+      summary: List all categories
+      description: Returns all supported unit categories.
+      operationId: getCategories
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UnitCategory'
+              example:
+                - LENGTH
+                - WEIGHT
+                - TEMPERATURE
+                - VOLUME
+
+  /api/units/{category}:
+    get:
+      tags:
+        - Unit Converter
+      summary: List units for a category
+      description: Returns all supported units for the given category.
+      operationId: getUnits
+      parameters:
+        - name: category
+          in: path
+          required: true
+          description: "Category name (e.g. LENGTH, WEIGHT, TEMPERATURE, VOLUME)"
+          schema:
+            $ref: '#/components/schemas/UnitCategory'
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+              examples:
+                length:
+                  summary: LENGTH units
+                  value: ["millimeter", "centimeter", "meter", "kilometer", "inch", "foot", "yard", "mile"]
+                weight:
+                  summary: WEIGHT units
+                  value: ["milligram", "gram", "kilogram", "ounce", "pound"]
+                temperature:
+                  summary: TEMPERATURE units
+                  value: ["celsius", "fahrenheit", "kelvin"]
+                volume:
+                  summary: VOLUME units
+                  value: ["liter", "milliliter", "gallon", "cup", "fluid_ounce"]
+        '400':
+          description: Unknown category
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                message: "No enum constant com.unitconverter.model.UnitCategory.INVALID"
+
+  /api/convert:
+    post:
+      tags:
+        - Unit Converter
+      summary: Convert a value
+      description: Converts a value from one unit to another within the same category.
+      operationId: convert
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConversionRequest'
+            examples:
+              length:
+                summary: Length conversion
+                value:
+                  category: LENGTH
+                  sourceUnit: meter
+                  targetUnit: foot
+                  value: 100
+              temperature:
+                summary: Temperature conversion
+                value:
+                  category: TEMPERATURE
+                  sourceUnit: celsius
+                  targetUnit: fahrenheit
+                  value: 100
+              weight:
+                summary: Weight conversion
+                value:
+                  category: WEIGHT
+                  sourceUnit: kilogram
+                  targetUnit: pound
+                  value: 70
+              volume:
+                summary: Volume conversion
+                value:
+                  category: VOLUME
+                  sourceUnit: liter
+                  targetUnit: gallon
+                  value: 5
+      responses:
+        '200':
+          description: Conversion successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConversionResult'
+              example:
+                originalValue: 100.0
+                convertedValue: 328.084
+                sourceUnit: meter
+                targetUnit: foot
+                formula: "1 meter = 3.28084 foot"
+        '400':
+          description: Invalid category or unit
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                message: "Unsupported unit: meters or feet"
+
+components:
+  schemas:
+    UnitCategory:
+      type: string
+      description: Supported unit category
+      enum:
+        - LENGTH
+        - WEIGHT
+        - TEMPERATURE
+        - VOLUME
+
+    ConversionRequest:
+      type: object
+      description: Request body for a unit conversion
+      required:
+        - category
+        - sourceUnit
+        - targetUnit
+        - value
+      properties:
+        category:
+          $ref: '#/components/schemas/UnitCategory'
+        sourceUnit:
+          type: string
+          description: Unit to convert from
+          example: meter
+        targetUnit:
+          type: string
+          description: Unit to convert to
+          example: foot
+        value:
+          type: number
+          format: double
+          description: Value to convert
+          example: 100
+
+    ConversionResult:
+      type: object
+      description: Result of a unit conversion
+      properties:
+        originalValue:
+          type: number
+          format: double
+          description: The original value provided
+          example: 100.0
+        convertedValue:
+          type: number
+          format: double
+          description: The converted value
+          example: 328.084
+        sourceUnit:
+          type: string
+          description: Source unit
+          example: meter
+        targetUnit:
+          type: string
+          description: Target unit
+          example: foot
+        formula:
+          type: string
+          description: Human-readable conversion formula
+          example: "1 meter = 3.28084 foot"
+
+    ErrorResponse:
+      type: object
+      description: Error response body
+      properties:
+        message:
+          type: string
+          description: Human-readable error message
+          example: "Unsupported unit: meters or feet"
